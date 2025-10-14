@@ -229,6 +229,35 @@ graph LR
 - Habilite HTTPS em produção
 - Use autenticação/autorização quando necessário
 
+## ⚠️ Production Considerations
+
+### Current Implementation Limitations
+This is a **demonstration/proof-of-concept** project. For production use, consider:
+
+1. **Data Storage**: Replace in-memory static list with:
+   - Azure SQL Database
+   - Azure Cosmos DB
+   - Azure Table Storage
+   - Any other persistent data store
+
+2. **Thread Safety**: The current static list is not thread-safe
+   - Implement proper locking mechanisms
+   - Use thread-safe collections (e.g., ConcurrentBag)
+   - Or use a proper database with ACID guarantees
+
+3. **ID Generation**: Replace simple increment with:
+   - Database auto-increment
+   - GUID/UUID generation
+   - Distributed ID generation service
+
+4. **Error Handling**: Add comprehensive error handling and logging
+
+5. **Authentication**: Implement Azure AD, API keys, or JWT tokens
+
+6. **Rate Limiting**: Add throttling to prevent abuse
+
+7. **Monitoring**: Expand Application Insights with custom metrics and alerts
+
 ## 📈 Monitoramento
 
 A aplicação está integrada com Azure Application Insights para:

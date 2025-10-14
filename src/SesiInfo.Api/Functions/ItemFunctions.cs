@@ -10,6 +10,10 @@ namespace SesiInfo.Api.Functions;
 public class ItemFunctions
 {
     private readonly ILogger<ItemFunctions> _logger;
+    
+    // NOTE: This static list is for demonstration purposes only
+    // In a production environment, use a proper data store (e.g., Azure SQL, Cosmos DB, Table Storage)
+    // and implement thread-safe operations for concurrent requests
     private static readonly List<Item> Items = new()
     {
         new Item { Id = 1, Name = "Item 1", Description = "First item" },
@@ -88,6 +92,8 @@ public class ItemFunctions
             return badRequest;
         }
 
+        // NOTE: This ID generation is not thread-safe and is for demonstration only
+        // In production, use a database with auto-increment or GUID generation
         newItem.Id = Items.Any() ? Items.Max(i => i.Id) + 1 : 1;
         Items.Add(newItem);
 
