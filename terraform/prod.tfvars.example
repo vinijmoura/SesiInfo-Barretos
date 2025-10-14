@@ -1,0 +1,9 @@
+# Production environment variables
+environment = "prod"
+location    = "East US"
+app_name    = "sesiinfo"
+
+tags = {
+  Project = "SesiInfo Barretos"
+  Owner   = "DevOps Team"
+}
