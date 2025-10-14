@@ -1,0 +1,9 @@
+# Development environment variables
+environment = "dev"
+location    = "East US"
+app_name    = "sesiinfo"
+
+tags = {
+  Project = "SesiInfo Barretos"
+  Owner   = "DevOps Team"
+}
