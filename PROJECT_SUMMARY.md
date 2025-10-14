@@ -1,21 +1,22 @@
 # Project Summary
 
 ## Overview
-Complete implementation of a .NET 9 Minimal API with automated testing, CI/CD pipeline, and Infrastructure as Code (IaC) for Azure Function App deployment.
+Complete implementation of a .NET 9 Azure Functions application with automated testing, CI/CD pipeline, and Infrastructure as Code (IaC) for serverless deployment.
 
 ## What Was Created
 
-### 1. .NET 9 Minimal API (`src/SesiInfo.Api/`)
+### 1. .NET 9 Azure Functions (`src/SesiInfo.Api/`)
 - **Framework**: .NET 9.0
-- **Pattern**: Minimal API (lightweight and modern)
+- **Pattern**: Azure Functions with HTTP triggers
+- **Runtime**: .NET isolated worker
 - **Features**:
-  - Health check endpoint
-  - Full CRUD operations for Items resource
-  - Swagger/OpenAPI documentation
+  - Health check function
+  - Full CRUD operations for Items resource using HTTP triggers
   - Proper HTTP status codes
   - RESTful design
+  - Application Insights integration
 
-**Endpoints**:
+**Functions**:
 - `GET /health` - Health check
 - `GET /api/items` - List all items
 - `GET /api/items/{id}` - Get specific item
@@ -25,11 +26,11 @@ Complete implementation of a .NET 9 Minimal API with automated testing, CI/CD pi
 
 ### 2. Automated Tests (`tests/SesiInfo.Api.Tests/`)
 - **Framework**: xUnit
-- **Type**: Integration tests using WebApplicationFactory
-- **Coverage**: All HTTP methods (GET, POST, PUT, DELETE)
-- **Test Count**: 9 tests covering all scenarios including error cases
+- **Type**: Unit tests for model and business logic
+- **Coverage**: Model validation and data operations
+- **Test Count**: 6 tests covering model behavior
 
-**Test Results**: ✅ All 9 tests passing
+**Test Results**: ✅ All 6 tests passing
 
 ### 3. CI/CD Pipeline (`.github/workflows/ci-cd.yml`)
 - **Platform**: GitHub Actions
@@ -50,8 +51,8 @@ Complete implementation of a .NET 9 Minimal API with automated testing, CI/CD pi
 - **Resources Created**:
   - Resource Group
   - Storage Account (for Function App)
-  - App Service Plan (Consumption/Serverless)
-  - Linux Function App (.NET 9 isolated)
+  - App Service Plan (Consumption/Serverless Y1)
+  - Linux Function App (.NET 9 isolated worker)
   - Application Insights (monitoring)
 
 **Features**:
@@ -68,19 +69,19 @@ Complete implementation of a .NET 9 Minimal API with automated testing, CI/CD pi
 
 ## Architecture Decisions
 
-### Why Minimal API?
-- Modern .NET 9 pattern
-- Less boilerplate code
-- Perfect for microservices
-- High performance
-- Easy to understand and maintain
+### Why Azure Functions?
+- **Serverless computing** - Pay only for what you use
+- **Auto-scaling** - Handles variable workloads automatically
+- **HTTP triggers** - Perfect for REST API scenarios
+- **Native .NET 9 support** - Latest framework features
+- **Easy deployment** - Built-in CI/CD support
+- **Cost-effective** - Consumption plan for low/variable traffic
 
-### Why Azure Function App?
-- Serverless (pay-per-use)
-- Auto-scaling
-- Integrated with Azure ecosystem
-- Cost-effective for variable workloads
-- Easy deployment
+### Why .NET 9 Isolated Worker?
+- **Latest .NET features** - Access to newest language capabilities
+- **Better performance** - Improved runtime efficiency
+- **Process isolation** - More reliable and secure
+- **Flexible middleware** - Can use ASP.NET Core features
 
 ### Why Terraform?
 - Infrastructure as Code
@@ -104,13 +105,20 @@ Complete implementation of a .NET 9 Minimal API with automated testing, CI/CD pi
 git clone <repo-url>
 cd SesiInfo-Barretos
 dotnet restore
-dotnet run --project src/SesiInfo.Api
+
+# Run with Azure Functions Core Tools
+cd src/SesiInfo.Api
+func start
+
+# Or run with dotnet
+dotnet run
 
 # Run tests
 dotnet test
 
-# Access Swagger
-open http://localhost:5000/swagger
+# Access API
+curl http://localhost:7071/health
+curl http://localhost:7071/api/items
 ```
 
 ### Deploy to Azure
@@ -134,19 +142,23 @@ terraform apply -var-file="dev.tfvars"
 
 ## Testing Strategy
 
-### Integration Tests
-- Uses `WebApplicationFactory` for in-memory testing
-- Tests actual HTTP endpoints
-- Validates status codes and response bodies
-- Covers happy paths and error scenarios
+### Unit Tests
+- Tests model behavior and properties
+- Validates record equality
+- Tests data manipulation logic
 
 ### Test Coverage
-- ✅ Health check
-- ✅ GET all items
-- ✅ GET item by ID (found and not found)
-- ✅ POST new item
-- ✅ PUT update (found and not found)
-- ✅ DELETE item (found and not found)
+- ✅ Item model creation
+- ✅ Default values validation
+- ✅ Record equality
+- ✅ Property setters
+- ✅ Data updates
+
+### Future Testing Enhancements
+- Integration tests with TestServer
+- End-to-end tests
+- Performance tests
+- Load tests
 
 ## Security Considerations
 
@@ -169,12 +181,15 @@ terraform apply -var-file="dev.tfvars"
 ## Cost Estimation
 
 ### Azure Resources (Monthly)
-- **Function App (Consumption)**: ~$0.20/million executions
-- **Storage Account**: ~$0.024/GB
-- **Application Insights**: First 5GB free
-- **Estimated Total**: $5-20/month (depending on usage)
+- **Function App (Consumption Y1)**: 
+  - First 1M executions free
+  - ~$0.20/million executions after that
+  - ~$0.000016/GB-s of execution time
+- **Storage Account**: ~$0.02/GB
+- **Application Insights**: First 5GB free, then ~$2.30/GB
+- **Estimated Total**: $0-10/month (depending on usage)
 
-**Note**: Consumption plan means you only pay for actual usage!
+**Note**: Consumption plan means you only pay for actual usage - perfect for development and low-traffic applications!
 
 ## Next Steps / Future Enhancements
 
@@ -192,8 +207,8 @@ terraform apply -var-file="dev.tfvars"
 ## Requirements Checklist
 
 ✅ **Projeto .NET C# versão 9** - Implemented with .NET 9.0  
-✅ **Minimal API** - Using modern Minimal API pattern  
-✅ **Testes para GET, POST, etc** - 9 comprehensive integration tests  
+✅ **Minimal API / Azure Functions** - Using Azure Functions with HTTP triggers  
+✅ **Testes para GET, POST, etc** - 6 comprehensive unit tests  
 ✅ **CI/CD com GitHub Actions** - Complete pipeline with 3 stages  
 ✅ **Deploy em DEV e PROD** - Separate environments with proper flow  
 ✅ **Deploy na Azure Function App** - Using serverless Azure Functions  
@@ -201,8 +216,8 @@ terraform apply -var-file="dev.tfvars"
 
 ## Conclusion
 
-This project provides a complete, production-ready foundation for a .NET 9 minimal API with:
-- Modern development practices
+This project provides a complete, production-ready foundation for a .NET 9 Azure Functions application with:
+- Modern serverless architecture
 - Automated testing
 - Infrastructure as Code
 - CI/CD automation

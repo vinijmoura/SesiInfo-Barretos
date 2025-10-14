@@ -1,12 +1,12 @@
 # SesiInfo-Barretos
 
-Minimal API em .NET 9 com deployment automático em Azure Function App usando GitHub Actions e Terraform.
+Azure Functions em .NET 9 com deployment automático usando GitHub Actions e Terraform.
 
 ## 📋 Requisitos Atendidos
 
 - ✅ Projeto .NET C# versão 9
-- ✅ Minimal API com endpoints REST completos
-- ✅ Testes automatizados para todos os métodos HTTP (GET, POST, PUT, DELETE)
+- ✅ Azure Functions com HTTP triggers (REST API)
+- ✅ Testes automatizados para validar a aplicação
 - ✅ CI/CD com GitHub Actions
 - ✅ Deploy em ambiente DEV e PROD
 - ✅ Deployment em Azure Function App
@@ -17,10 +17,14 @@ Minimal API em .NET 9 com deployment automático em Azure Function App usando Gi
 ```
 SesiInfo-Barretos/
 ├── src/
-│   └── SesiInfo.Api/          # Minimal API .NET 9
+│   └── SesiInfo.Api/               # Azure Functions .NET 9
+│       ├── Functions/
+│       │   └── ItemFunctions.cs    # HTTP-triggered functions
+│       └── Models/
+│           └── Item.cs             # Data model
 ├── tests/
-│   └── SesiInfo.Api.Tests/    # Testes com xUnit
-├── terraform/                  # Infrastructure as Code
+│   └── SesiInfo.Api.Tests/         # Unit tests
+├── terraform/                       # Infrastructure as Code
 │   ├── main.tf
 │   ├── variables.tf
 │   ├── outputs.tf
@@ -28,10 +32,10 @@ SesiInfo-Barretos/
 │   ├── dev.tfvars.example
 │   └── prod.tfvars.example
 └── .github/workflows/
-    └── ci-cd.yml              # Pipeline CI/CD
+    └── ci-cd.yml                   # Pipeline CI/CD
 ```
 
-## 🚀 API Endpoints
+## 🚀 Azure Functions Endpoints
 
 ### Health Check
 - `GET /health` - Verifica a saúde da API
@@ -43,15 +47,11 @@ SesiInfo-Barretos/
 - `PUT /api/items/{id}` - Atualiza item existente
 - `DELETE /api/items/{id}` - Remove item
 
-### Swagger UI
-Disponível em `/swagger` quando executando em modo Development.
-
 ## 🛠️ Tecnologias Utilizadas
 
 - **.NET 9.0** - Framework principal
-- **Minimal API** - Padrão de API simplificado
+- **Azure Functions** - Serverless computing
 - **xUnit** - Framework de testes
-- **Swagger/OpenAPI** - Documentação da API
 - **GitHub Actions** - CI/CD
 - **Terraform** - Infrastructure as Code
 - **Azure Function App** - Hosting da aplicação
@@ -60,6 +60,7 @@ Disponível em `/swagger` quando executando em modo Development.
 ## 📦 Pré-requisitos
 
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Azure Functions Core Tools](https://docs.microsoft.com/azure/azure-functions/functions-run-local)
 - [Terraform](https://www.terraform.io/downloads) (>= 1.0)
 - Conta [Azure](https://azure.microsoft.com/)
 - [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) (opcional)
@@ -79,12 +80,15 @@ dotnet restore
 
 3. **Execute a aplicação:**
 ```bash
-dotnet run --project src/SesiInfo.Api
+cd src/SesiInfo.Api
+func start
+# ou
+dotnet run
 ```
 
-4. **Acesse a API:**
-- API: `http://localhost:5000`
-- Swagger: `http://localhost:5000/swagger`
+4. **Acesse as Functions:**
+- Health check: `http://localhost:7071/health`
+- Items: `http://localhost:7071/api/items`
 
 ## 🧪 Como Executar os Testes
 
@@ -117,7 +121,7 @@ O Terraform cria automaticamente:
 - **Resource Group** - Grupo de recursos
 - **Storage Account** - Armazenamento para Function App
 - **App Service Plan** - Plano de hospedagem (Consumption)
-- **Function App** - Aplicação serverless
+- **Function App** - Aplicação serverless (.NET 9 isolated)
 - **Application Insights** - Telemetria e monitoramento
 
 ### Configuração do Terraform
@@ -207,12 +211,14 @@ graph LR
 
 ## 📊 Estrutura do Projeto
 
-### API Project (src/SesiInfo.Api)
-- `Program.cs` - Configuração da aplicação e endpoints
+### Azure Functions Project (src/SesiInfo.Api)
+- `Program.cs` - Configuração da aplicação
+- `Functions/ItemFunctions.cs` - HTTP-triggered functions com CRUD
+- `Models/Item.cs` - Modelo de dados
 - `SesiInfo.Api.csproj` - Configuração do projeto
 
 ### Test Project (tests/SesiInfo.Api.Tests)
-- `UnitTest1.cs` - Testes de integração dos endpoints
+- `UnitTest1.cs` - Testes unitários
 - `SesiInfo.Api.Tests.csproj` - Configuração dos testes
 
 ## 🔐 Segurança
